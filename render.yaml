@@ -3,7 +3,5 @@ services:
     name: career-copilot-ai
     env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: streamlit run streamlit_app.py
-    envVars:
-      - key: PYTHON_VERSION
-        value: 3.10
+    startCommand: streamlit run streamlit_app.py --server.port=$PORT --server.enableCORS=false
+    pythonVersion: 3.10.13
