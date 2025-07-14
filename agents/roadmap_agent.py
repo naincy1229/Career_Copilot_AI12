@@ -1,21 +1,36 @@
-import ollama
+# utils/roadmap_agent.py
 
-def generate_learning_roadmap(resume_data, query, model="gemma:2b"):
+from transformers import pipeline
+
+# Load model once using Streamlit cache
+import streamlit as st
+
+@st.cache_resource
+def load_roadmap_generator():
+    return pipeline("text-generation", model="gpt2")
+
+generator = load_roadmap_generator()
+
+def generate_learning_roadmap(resume_data, query, model="gpt2"):
     if not query:
-        return "Please provide a valid learning goal or topic."
+        return "❌ Please provide a valid learning goal or topic."
 
-    prompt = (
-        f"You are a career guidance AI. A user has provided their resume data below:\n"
+    # Prepare prompt
+    prompt = f"""
+You are an expert career coach. The user has the following background:
 
-        f"{resume_data}\n\n"
-        f"They are asking for a learning roadmap with this query:\n{query}\n"
-        f"Generate a detailed and actionable learning roadmap tailored to their background."
-    )
+{resume_data}
 
-    response = ollama.chat(
-        model=model,
-        messages=[
-            {"role": "user", "content": prompt}
-        ]
-    )
-    return response["message"]["content"]
+They are asking for a learning roadmap on:
+"{query}"
+
+Generate a detailed, step-by-step personalized learning roadmap that includes beginner to advanced concepts, tools, and platforms.
+"""
+
+    try:
+        output = generator(prompt, max_length=500, do_sample=True, num_return_sequences=1)
+        roadmap = output[0]['generated_text'].replace(prompt, "").strip()
+        return roadmap
+
+    except Exception as e:
+        return f"❌ Error generating roadmap: {e}"

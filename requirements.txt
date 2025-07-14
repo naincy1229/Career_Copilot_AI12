@@ -13,11 +13,5 @@ numpy==1.24.4
 Cython==0.29.36
 pymupdf==1.23.7
 transformers==4.38.2
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 torch==2.2.2
->>>>>>> b5338d4 (💾 Save local changes before pulling)
-=======
-torch==2.2.2
->>>>>>> b5338d4123ab822d91881e42e09544d4c406a755
+fpdf

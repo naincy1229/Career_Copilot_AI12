@@ -13,6 +13,7 @@ from datetime import datetime
 from utils.linkedin_summary_generator import generate_linkedin_summary
 from utils.domain_companies import get_companies_by_domain
 from deep_translator import GoogleTranslator
+from chains.interview_agent import run_mock_interview
 
 
 # Constants
@@ -27,7 +28,11 @@ st.set_page_config(page_title="Career Copilot AI", layout="wide", initial_sideba
 def apply_flat_two_column_theme():
     st.markdown("""
     <style>
-    /* Clean flat layout */
+    html, body {
+        scroll-behavior: auto !important;
+        overflow-anchor: none !important;
+    }
+
     #MainMenu, header, footer {visibility: hidden;}
 
     .block-container {
@@ -37,7 +42,6 @@ def apply_flat_two_column_theme():
         font-size: 0.92rem;
     }
 
-    /* Left pane styling */
     div[data-testid="column"]:first-child {
         background-color: #1e293b;
         border-radius: 12px;
@@ -46,7 +50,6 @@ def apply_flat_two_column_theme():
         border: 1px solid #334155;
     }
 
-    /* Right pane styling */
     div[data-testid="column"]:last-child {
         background-color: #111827;
         padding: 1.5rem 1rem;
@@ -80,13 +83,16 @@ def apply_flat_two_column_theme():
         font-weight: 600;
         padding: 6px 14px;
         margin-top: 8px;
+        transition: all 0.3s ease;
     }
 
     .stButton>button:hover {
         background-color: #2563eb;
+        box-shadow: 0 0 10px #3b82f6;
     }
     </style>
     """, unsafe_allow_html=True)
+
 
 
 apply_flat_two_column_theme()
@@ -197,11 +203,14 @@ with st.sidebar:
 
 # 🌟 Header Section
 st.markdown("""
-    <h1 style='text-align: center; color: #58a6ff;'>Career Copilot AI</h1>
-    <p style='text-align: center; font-size: 18px; color: #cccccc;'>
+    <h1 style='text-align: center; color: #58a6ff; font-size: 2.5rem; font-weight: bold;'>
+        Career Copilot AI
+    </h1>
+    <p style='text-align: center; font-size: 1.2rem; color: #cccccc; margin-top: -0.5rem;'>
         Your personal AI Assistant for <b>Resume & Career Guidance</b>
     </p>
 """, unsafe_allow_html=True)
+
 for entry in st.session_state.chat_history:
     with st.chat_message(entry["role"]):
         st.markdown(entry["content"])
@@ -398,9 +407,6 @@ if st.button("🔍 Show Companies Hiring"):
             st.warning("⚠️ No data available for this domain yet.")
     else:
         st.warning("⚠️ Please select a domain first.")
-
-
-
 
 # ---- OUTPUTS ----
 if st.session_state.get("run_resume_score") and st.session_state.resume_data:
