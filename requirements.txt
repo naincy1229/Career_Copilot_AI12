@@ -14,4 +14,4 @@ Cython==0.29.36
 pymupdf==1.23.7
 transformers==4.38.2
 torch==2.2.2
-fpdf
+fpdf2==2.7.8
